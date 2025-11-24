@@ -44,7 +44,7 @@ This POC showcases how to build **maintainable**, **scalable**, and **reliable**
 
 **Path Generation**. XState graph algorithms can generate test paths automatically, reducing manual test case creation.
 
-**Visual State Models**. State machines serve as living documentation of the application's behavior.
+**Visual State Models**. State machines serve as living documentation of the application's behavior. Generate interactive visualizations with `npm run visualize` to view state diagrams and explore all possible paths.
 
 ## 🚀 Quick Start
 
@@ -81,6 +81,9 @@ npm run test:debug
 
 # Re-record HAR files
 npm run test:record
+
+# Generate state machine visualizations
+npm run visualize
 ```
 
 ## 📖 Examples
@@ -236,10 +239,17 @@ playwright-functional/
 │   ├── login-test-data.json
 │   └── register-test-data.json
 ├── scripts/
-│   └── record-har.ts        # HAR file recording script
+│   ├── record-har.ts        # HAR file recording script
+│   └── visualize-machines.ts # State machine visualization generator
 ├── har/                     # Recorded network traffic (gitignored)
 │   ├── login.har
 │   └── register.har
+├── visualizations/          # Generated state machine visualizations
+│   ├── index.html           # Interactive HTML with diagrams
+│   ├── login-machine.mmd    # Mermaid diagram source
+│   ├── login-machine.json   # XState Visualizer format
+│   ├── register-machine.mmd # Mermaid diagram source
+│   └── register-machine.json # XState Visualizer format
 └── playwright.config.ts     # Playwright configuration
 ```
 
@@ -363,6 +373,48 @@ npx playwright show-report
 ### Trace Files
 
 Traces are automatically captured on first retry. View them in the HTML report.
+
+## 📊 Visualizing State Machines
+
+Visualize your state machines to better understand the application flow and test coverage.
+
+### Generate Visualizations
+
+```bash
+npm run visualize
+```
+
+This command generates multiple visualization formats for all state machines in the project:
+
+- **Interactive HTML** (`visualizations/index.html`) - Open in your browser to view Mermaid diagrams
+- **Mermaid diagrams** (`visualizations/*.mmd`) - Use with [Mermaid Live Editor](https://mermaid.live)
+- **XState JSON** (`visualizations/*.json`) - Import into [XState Visualizer](https://stately.ai/viz)
+
+### Viewing Options
+
+**Option 1: Interactive HTML (Recommended)**
+```bash
+# Open the generated HTML file in your browser
+open visualizations/index.html
+# or
+xdg-open visualizations/index.html  # Linux
+```
+
+**Option 2: XState Visualizer**
+1. Visit [https://stately.ai/viz](https://stately.ai/viz)
+2. Copy the content from `visualizations/login-machine.json` or `visualizations/register-machine.json`
+3. Paste into the visualizer for an interactive experience
+
+**Option 3: Mermaid Live Editor**
+1. Visit [https://mermaid.live](https://mermaid.live)
+2. Copy the content from `visualizations/*.mmd` files
+3. Paste and customize the diagrams
+
+The visualizations show:
+- All states (initial, loginPage, securePage, etc.)
+- State transitions with event labels
+- Final states
+- Complete state machine flow
 
 ## 📖 Documentation
 

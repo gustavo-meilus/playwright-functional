@@ -9,6 +9,7 @@
     "test:debug": "playwright test --debug",
     "test:record": "UPDATE_SNAPSHOT=true playwright test",
     "record-har": "tsx scripts/record-har.ts",
+    "visualize": "tsx scripts/visualize-machines.ts",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\""
   },

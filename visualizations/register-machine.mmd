@@ -1,0 +1,9 @@
+stateDiagram-v2
+    [*] --> initial
+    initial --> registerPage: NAVIGATE_TO_REGISTER
+    registerPage --> loginPage: SUBMIT_VALID_REGISTRATION
+    registerPage --> registerPageWithError: SUBMIT_MISSING_USERNAME
+    registerPage --> registerPageWithError: SUBMIT_MISSING_PASSWORD
+    registerPage --> registerPageWithError: SUBMIT_NON_MATCHING_PASSWORDS
+    loginPage --> [*]
+    registerPageWithError --> [*]

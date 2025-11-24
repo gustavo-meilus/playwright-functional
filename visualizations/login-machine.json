@@ -1,0 +1,49 @@
+{
+  "id": "loginMachine",
+  "initial": "initial",
+  "context": {
+    "page": null,
+    "username": "",
+    "password": ""
+  },
+  "states": {
+    "initial": {
+      "on": {
+        "NAVIGATE_TO_LOGIN": {
+          "target": "loginPage"
+        }
+      }
+    },
+    "loginPage": {
+      "on": {
+        "SUBMIT_VALID_CREDENTIALS": {
+          "target": "securePage",
+          "actions": {
+            "type": "xstate.assign",
+            "assignment": {}
+          }
+        },
+        "SUBMIT_INVALID_USERNAME": {
+          "target": "loginPageWithError",
+          "actions": {
+            "type": "xstate.assign",
+            "assignment": {}
+          }
+        },
+        "SUBMIT_INVALID_PASSWORD": {
+          "target": "loginPageWithError",
+          "actions": {
+            "type": "xstate.assign",
+            "assignment": {}
+          }
+        }
+      }
+    },
+    "securePage": {
+      "type": "final"
+    },
+    "loginPageWithError": {
+      "type": "final"
+    }
+  }
+}

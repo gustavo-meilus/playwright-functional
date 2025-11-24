@@ -1,0 +1,57 @@
+{
+  "id": "registerMachine",
+  "initial": "initial",
+  "context": {
+    "page": null,
+    "username": "",
+    "password": "",
+    "confirmPassword": ""
+  },
+  "states": {
+    "initial": {
+      "on": {
+        "NAVIGATE_TO_REGISTER": {
+          "target": "registerPage"
+        }
+      }
+    },
+    "registerPage": {
+      "on": {
+        "SUBMIT_VALID_REGISTRATION": {
+          "target": "loginPage",
+          "actions": {
+            "type": "xstate.assign",
+            "assignment": {}
+          }
+        },
+        "SUBMIT_MISSING_USERNAME": {
+          "target": "registerPageWithError",
+          "actions": {
+            "type": "xstate.assign",
+            "assignment": {}
+          }
+        },
+        "SUBMIT_MISSING_PASSWORD": {
+          "target": "registerPageWithError",
+          "actions": {
+            "type": "xstate.assign",
+            "assignment": {}
+          }
+        },
+        "SUBMIT_NON_MATCHING_PASSWORDS": {
+          "target": "registerPageWithError",
+          "actions": {
+            "type": "xstate.assign",
+            "assignment": {}
+          }
+        }
+      }
+    },
+    "loginPage": {
+      "type": "final"
+    },
+    "registerPageWithError": {
+      "type": "final"
+    }
+  }
+}

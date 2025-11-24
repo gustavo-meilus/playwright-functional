@@ -1,0 +1,8 @@
+stateDiagram-v2
+    [*] --> initial
+    initial --> loginPage: NAVIGATE_TO_LOGIN
+    loginPage --> securePage: SUBMIT_VALID_CREDENTIALS
+    loginPage --> loginPageWithError: SUBMIT_INVALID_USERNAME
+    loginPage --> loginPageWithError: SUBMIT_INVALID_PASSWORD
+    securePage --> [*]
+    loginPageWithError --> [*]
