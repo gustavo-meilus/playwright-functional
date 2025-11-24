@@ -1,0 +1,56 @@
+{
+  "name": "playwright-functional",
+  "version": "1.0.0",
+  "description": "Proof of Concept: Model-Based Playwright tests using Functional Programming, XState, and HAR file mocking",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:record": "UPDATE_SNAPSHOT=true playwright test",
+    "record-har": "tsx scripts/record-har.ts"
+  },
+  "keywords": [
+    "playwright",
+    "testing",
+    "xstate",
+    "functional-programming",
+    "model-based-testing",
+    "har",
+    "end-to-end-testing",
+    "ui-testing",
+    "test-automation",
+    "poc",
+    "proof-of-concept"
+  ],
+  "author": "",
+  "license": "MIT",
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/microsoft"
+  },
+  "acknowledgments": [
+    "Playwright by Microsoft - https://playwright.dev",
+    "XState by Stately - https://xstate.js.org",
+    "Practice Expand Testing - https://practice.expandtesting.com"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/playwright-functional.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/playwright-functional/issues"
+  },
+  "homepage": "https://github.com/your-username/playwright-functional#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.1",
+    "@types/node": "^20.14.2",
+    "tsx": "^4.11.0",
+    "typescript": "^5.4.5",
+    "xstate": "^4.38.2"
+  }
+}
+

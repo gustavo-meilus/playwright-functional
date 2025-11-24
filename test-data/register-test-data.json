@@ -1,0 +1,45 @@
+{
+  "testCases": [
+    {
+      "id": "TC1",
+      "name": "Successful Registration",
+      "username": "newuser",
+      "password": "NewPassword123!",
+      "confirmPassword": "NewPassword123!",
+      "expectedState": "loginPage",
+      "expectedMessage": "Successfully registered, you can log in now.",
+      "expectedError": null
+    },
+    {
+      "id": "TC2",
+      "name": "Registration with Missing Username",
+      "username": "",
+      "password": "TestPassword123!",
+      "confirmPassword": "TestPassword123!",
+      "expectedState": "registerPageWithError",
+      "expectedMessage": null,
+      "expectedError": "All fields are required."
+    },
+    {
+      "id": "TC3",
+      "name": "Registration with Missing Password",
+      "username": "testuser",
+      "password": "",
+      "confirmPassword": "TestPassword123!",
+      "expectedState": "registerPageWithError",
+      "expectedMessage": null,
+      "expectedError": "All fields are required."
+    },
+    {
+      "id": "TC4",
+      "name": "Registration with Non-matching Passwords",
+      "username": "testuser",
+      "password": "TestPassword123!",
+      "confirmPassword": "DifferentPassword456!",
+      "expectedState": "registerPageWithError",
+      "expectedMessage": null,
+      "expectedError": "Passwords do not match."
+    }
+  ]
+}
+

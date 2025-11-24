@@ -1,0 +1,4 @@
+# HAR files directory
+# HAR files are generated and should not be committed to version control
+# Run `npm run record-har` to generate HAR files locally
+

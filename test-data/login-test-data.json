@@ -1,0 +1,32 @@
+{
+  "testCases": [
+    {
+      "id": "TC1",
+      "name": "Successful Login",
+      "username": "practice",
+      "password": "SuperSecretPassword!",
+      "expectedState": "securePage",
+      "expectedMessage": "You logged into a secure area!",
+      "expectedError": null
+    },
+    {
+      "id": "TC2",
+      "name": "Invalid Username",
+      "username": "wrongUser",
+      "password": "SuperSecretPassword!",
+      "expectedState": "loginPageWithError",
+      "expectedMessage": null,
+      "expectedError": "Invalid username."
+    },
+    {
+      "id": "TC3",
+      "name": "Invalid Password",
+      "username": "practice",
+      "password": "WrongPassword",
+      "expectedState": "loginPageWithError",
+      "expectedMessage": null,
+      "expectedError": "Invalid password."
+    }
+  ]
+}
+
