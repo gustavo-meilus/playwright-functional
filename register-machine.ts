@@ -116,4 +116,3 @@ export const createRegisterMachine = (page: Page) => {
 };
 
 export type RegisterMachine = ReturnType<typeof createRegisterMachine>;
-

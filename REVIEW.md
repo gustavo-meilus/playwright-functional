@@ -77,4 +77,3 @@ playwright-functional/
 ---
 
 _For detailed standards, see `AGENT_INSTRUCTIONS.md`_
-
