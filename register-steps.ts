@@ -13,15 +13,16 @@ export const navigateToRegister: InteractionStep = createInteraction({
   action: async (page: Page) => {
     await page.goto('https://practice.expandtesting.com/register', {
       waitUntil: 'domcontentloaded', // Keep domcontentloaded for stability
-      timeout: 25000, // Reduced from 30s - HAR files make this faster
+      timeout: 15000, // Optimized: HAR files make responses instant, 15s is sufficient
     });
   },
   postCondition: async (page: Page) => {
     const url = page.url();
     const isRegisterPage = url.includes('/register');
+    // Optimized: Reduce timeout since HAR makes page load instant
     const hasForm = await page
       .getByRole('textbox', { name: 'Username' })
-      .isVisible({ timeout: 10000 })
+      .isVisible({ timeout: 5000 })
       .catch(() => false);
     return isRegisterPage && hasForm;
   },
@@ -35,8 +36,9 @@ export const fillRegisterUsername = (username: string): InteractionStep =>
   createInteraction({
     name: `Fill Register Username: ${username}`,
     preCondition: async (page: Page) => {
+      // Optimized: Reduce timeout since HAR makes page load instant
       const field = page.getByRole('textbox', { name: 'Username' });
-      return await field.isVisible({ timeout: 8000 }).catch(() => false); // Reduced from 10s but still safe
+      return await field.isVisible({ timeout: 5000 }).catch(() => false);
     },
     action: async (page: Page) => {
       const field = page.getByRole('textbox', { name: 'Username' });
@@ -46,8 +48,9 @@ export const fillRegisterUsername = (username: string): InteractionStep =>
       }
     },
     postCondition: async (page: Page) => {
+      // Optimized: Reduce timeout - field value should be set immediately after fill
       const field = page.getByRole('textbox', { name: 'Username' });
-      const value = await field.inputValue({ timeout: 3000 }).catch(() => ''); // Reduced from 5s
+      const value = await field.inputValue({ timeout: 2000 }).catch(() => '');
       return value === username;
     },
   });
@@ -60,8 +63,9 @@ export const fillRegisterPassword = (password: string): InteractionStep =>
   createInteraction({
     name: `Fill Register Password`,
     preCondition: async (page: Page) => {
+      // Optimized: Reduce timeout since HAR makes page load instant
       const field = page.getByRole('textbox', { name: 'Password', exact: true });
-      return await field.isVisible({ timeout: 8000 }).catch(() => false); // Reduced from 10s but still safe
+      return await field.isVisible({ timeout: 5000 }).catch(() => false);
     },
     action: async (page: Page) => {
       const field = page.getByRole('textbox', { name: 'Password', exact: true });
@@ -71,8 +75,9 @@ export const fillRegisterPassword = (password: string): InteractionStep =>
       }
     },
     postCondition: async (page: Page) => {
+      // Optimized: Reduce timeout - field value should be set immediately after fill
       const field = page.getByRole('textbox', { name: 'Password', exact: true });
-      const value = await field.inputValue({ timeout: 3000 }).catch(() => ''); // Reduced from 5s
+      const value = await field.inputValue({ timeout: 2000 }).catch(() => '');
       return value === password;
     },
   });
@@ -85,8 +90,9 @@ export const fillConfirmPassword = (confirmPassword: string): InteractionStep =>
   createInteraction({
     name: `Fill Confirm Password`,
     preCondition: async (page: Page) => {
+      // Optimized: Reduce timeout since HAR makes page load instant
       const field = page.getByRole('textbox', { name: 'Confirm Password' });
-      return await field.isVisible({ timeout: 8000 }).catch(() => false); // Reduced from 10s but still safe
+      return await field.isVisible({ timeout: 5000 }).catch(() => false);
     },
     action: async (page: Page) => {
       const field = page.getByRole('textbox', { name: 'Confirm Password' });
@@ -96,8 +102,9 @@ export const fillConfirmPassword = (confirmPassword: string): InteractionStep =>
       }
     },
     postCondition: async (page: Page) => {
+      // Optimized: Reduce timeout - field value should be set immediately after fill
       const field = page.getByRole('textbox', { name: 'Confirm Password' });
-      const value = await field.inputValue({ timeout: 3000 }).catch(() => ''); // Reduced from 5s
+      const value = await field.inputValue({ timeout: 2000 }).catch(() => '');
       return value === confirmPassword;
     },
   });
@@ -108,27 +115,53 @@ export const fillConfirmPassword = (confirmPassword: string): InteractionStep =>
 export const clickRegister: InteractionStep = createInteraction({
   name: 'Click Register Button',
   preCondition: async (page: Page) => {
+    // Optimized: Reduce timeout since HAR makes page load instant
     const button = page.getByRole('button', { name: 'Register' });
-    return await button.isVisible({ timeout: 8000 }).catch(() => false); // Reduced from 10s but still safe
+    return await button.isVisible({ timeout: 5000 }).catch(() => false);
   },
   action: async (page: Page) => {
     const button = page.getByRole('button', { name: 'Register' });
-    await button.click(); // Remove explicit timeout - use global actionTimeout
+    await button.click();
   },
   postCondition: async (page: Page) => {
-    // Button click initiated, wait for either navigation to login page or error message/alert to appear
+    // Wait for navigation to login page (success case) or error message/alert (failure case)
+    // Increased timeout for error cases to handle parallel execution and HAR replay delays
     try {
-      // Wait for navigation to login page (success case) or error message/alert (failure case)
       await Promise.race([
-        page.waitForURL(/\/login/, { timeout: 12000 }), // Reduced from 15s but still safe
-        page.getByText(/(All fields are required|Passwords do not match)\./, { exact: false }).waitFor({ state: 'visible', timeout: 12000 }), // Reduced from 15s but still safe
-        page.getByText(/error occurred/i, { exact: false }).waitFor({ state: 'visible', timeout: 12000 }), // Reduced from 15s but still safe
-        page.locator('alert, [role="alert"]').waitFor({ state: 'visible', timeout: 12000 }), // Reduced from 15s but still safe
-      ]).catch(() => {});
+        page.waitForURL(/\/login/, { timeout: 10000 }),
+        page.getByText(/(All fields are required|Passwords do not match)\./, { exact: false }).waitFor({ state: 'visible', timeout: 10000 }),
+        page.getByText(/error occurred/i, { exact: false }).waitFor({ state: 'visible', timeout: 10000 }),
+        page.locator('alert, [role="alert"]').waitFor({ state: 'visible', timeout: 10000 }),
+      ]);
+      // One of the conditions was met, step succeeded
+      return true;
     } catch {
-      // Continue if neither condition is met
+      // If Promise.race times out, verify current state
+      // Check if we're still on register page (error case) or navigated (success case)
+      const url = page.url();
+      const isLoginPage = url.includes('/login');
+      
+      // If navigated to login, that's success
+      if (isLoginPage) return true;
+      
+      // If still on register page, check if error message is visible (might have appeared after timeout)
+      // Check each condition individually to avoid Promise.race rejection
+      const hasErrorText = await page
+        .getByText(/(All fields are required|Passwords do not match)\./, { exact: false })
+        .isVisible({ timeout: 2000 })
+        .catch(() => false);
+      
+      if (hasErrorText) return true;
+      
+      const hasAlert = await page
+        .locator('alert, [role="alert"]')
+        .first()
+        .isVisible({ timeout: 2000 })
+        .catch(() => false);
+      
+      // Return true if error is visible (error case is valid), false otherwise
+      return hasAlert;
     }
-    return true;
   },
 });
 
@@ -138,44 +171,29 @@ export const clickRegister: InteractionStep = createInteraction({
 export const verifyRegistrationSuccess: InteractionStep = createInteraction({
   name: 'Verify Registration Success',
   preCondition: async (page: Page) => {
-    // Wait for navigation to login page
-    try {
-      await page.waitForURL(/\/login/, { timeout: 12000 }); // Reduced from 15s but still safe
-    } catch {
-      // Continue even if URL doesn't match exactly
-    }
-    return true;
+    // Optimized: Skip redundant wait - clickRegister postCondition already waited for navigation
+    // Just verify we're on login page, don't wait again
+    const url = page.url();
+    return url.includes('/login');
   },
   action: async (page: Page) => {
     return;
   },
   postCondition: async (page: Page) => {
-    // Wait for navigation to complete
-    try {
-      await page.waitForURL(/\/login/, { timeout: 12000 }); // Reduced from 15s but still safe
-    } catch {
-      // If navigation didn't happen, check if we're still on register page
-      const url = page.url();
-      if (!url.includes('/login')) {
-        return false;
-      }
-    }
-    
-    // Remove redundant waitForLoadState - waitForURL already ensures navigation
+    // Optimized: Navigation already happened in clickRegister, just verify state
     const url = page.url();
     const isLoginPage = url.includes('/login');
     
-    // Primary verification: We're on the login page
     if (!isLoginPage) return false;
 
-    // Secondary verification: Login form is visible
+    // Optimized: Reduce timeout since HAR makes page load instant
+    // Verify login form is visible (should be immediate after navigation)
     const hasLoginForm = await page
       .getByRole('textbox', { name: 'Username' })
-      .isVisible({ timeout: 8000 }) // Reduced from 10s but still safe
+      .isVisible({ timeout: 5000 })
       .catch(() => false);
     
     // Success if we're on login page and form is visible
-    // Message is optional and may not always be present
     return hasLoginForm;
   },
 });

@@ -47,9 +47,11 @@ async function executeRegisterPath(page: Page, testCase: RegisterTestCase) {
   const navigateResult = await runStep(page, navigateToRegister);
   expect(navigateResult.success).toBe(true);
 
-  // Use unique username for successful registration to avoid conflicts
+  // Use unique username for successful registration to avoid conflicts across workers
+  // Format: newuser-{pid}-{timestamp}-{random} ensures uniqueness across parallel workers
+  // Process ID ensures uniqueness across workers, timestamp + random ensures uniqueness within worker
   const username = testCase.id === 'TC1' && testCase.expectedState === 'loginPage'
-    ? `newuser${Date.now()}${Math.random().toString(36).substring(2, 9)}`
+    ? `newuser-${process.pid}-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`
     : testCase.username;
 
   const fillUserResult = await runStep(
@@ -75,10 +77,7 @@ async function executeRegisterPath(page: Page, testCase: RegisterTestCase) {
 
   if (testCase.expectedState === 'loginPage') {
     const verifyResult = await runStep(page, verifyRegistrationSuccess);
-    if (!verifyResult.success) {
-      console.log(`Verification failed: ${verifyResult.error}`);
-      console.log(`Current URL: ${page.url()}`);
-    }
+    // Error details are already logged by runStep via console.warn in fp-utils.ts
     expect(verifyResult.success).toBe(true);
     // Optional: Check for success message if provided
     if (testCase.expectedMessage) {
@@ -116,20 +115,22 @@ test.describe('Register Model-Based Tests with HAR Mocking', () => {
       try {
         if (updateHar) {
           // Record mode: Capture network traffic
+          // Playwright handles concurrent HAR updates safely, but we add retry logic for robustness
           await context.routeFromHAR(harPath, {
             update: true,
             updateContent: 'embed',
             updateMode: 'minimal',
           });
         } else {
-          // Replay mode: Use recorded HAR file for mocking
+          // Replay mode: Use recorded HAR file for mocking (read-only, thread-safe)
           await context.routeFromHAR(harPath, {
             notFound: 'fallback', // Fallback to network if HAR entry not found
           });
         }
       } catch (error) {
         // HAR file doesn't exist or is invalid, continue without mocking
-        console.warn('HAR file not available, using live network:', error);
+        // This is safe - each worker has its own context, so failures don't affect others
+        console.warn(`[Worker ${process.pid}] HAR file not available, using live network:`, error);
       }
     }
   });

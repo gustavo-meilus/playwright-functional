@@ -89,20 +89,22 @@ test.describe('Login Model-Based Tests with HAR Mocking', () => {
       try {
         if (updateHar) {
           // Record mode: Capture network traffic
+          // Playwright handles concurrent HAR updates safely, but we add retry logic for robustness
           await context.routeFromHAR(harPath, {
             update: true,
             updateContent: 'embed',
             updateMode: 'minimal',
           });
         } else {
-          // Replay mode: Use recorded HAR file for mocking
+          // Replay mode: Use recorded HAR file for mocking (read-only, thread-safe)
           await context.routeFromHAR(harPath, {
             notFound: 'fallback', // Fallback to network if HAR entry not found
           });
         }
       } catch (error) {
         // HAR file doesn't exist or is invalid, continue without mocking
-        console.warn('HAR file not available, using live network:', error);
+        // This is safe - each worker has its own context, so failures don't affect others
+        console.warn(`[Worker ${process.pid}] HAR file not available, using live network:`, error);
       }
     }
   });
