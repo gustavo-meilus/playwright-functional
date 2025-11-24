@@ -14,7 +14,7 @@ async function recordHAR() {
 
   // Record login HAR
   await recordLoginHAR(loginHarPath);
-  
+
   // Record registration HAR
   await recordRegisterHAR(registerHarPath);
 }
@@ -44,7 +44,9 @@ async function recordLoginHAR(harPath: string) {
       .getByRole('textbox', { name: 'Username' })
       .waitFor({ state: 'visible', timeout: 15000 });
     await page.getByRole('textbox', { name: 'Username' }).fill('practice');
-    await page.getByRole('textbox', { name: 'Password' }).fill('SuperSecretPassword!');
+    await page
+      .getByRole('textbox', { name: 'Password' })
+      .fill('SuperSecretPassword!');
     await page.getByRole('button', { name: 'Login' }).click();
     await page.waitForURL(/\/secure/, { timeout: 15000 });
 
@@ -65,9 +67,14 @@ async function recordLoginHAR(harPath: string) {
       .getByRole('textbox', { name: 'Username' })
       .waitFor({ state: 'visible', timeout: 15000 });
     await page.getByRole('textbox', { name: 'Username' }).fill('wrongUser');
-    await page.getByRole('textbox', { name: 'Password' }).fill('SuperSecretPassword!');
+    await page
+      .getByRole('textbox', { name: 'Password' })
+      .fill('SuperSecretPassword!');
     await page.getByRole('button', { name: 'Login' }).click();
-    await page.getByText('Invalid username.', { exact: false }).waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+    await page
+      .getByText('Invalid username.', { exact: false })
+      .waitFor({ state: 'visible', timeout: 10000 })
+      .catch(() => {});
 
     // Record error flow (invalid password)
     console.log('Recording invalid password flow...');
@@ -81,7 +88,10 @@ async function recordLoginHAR(harPath: string) {
     await page.getByRole('textbox', { name: 'Username' }).fill('practice');
     await page.getByRole('textbox', { name: 'Password' }).fill('WrongPassword');
     await page.getByRole('button', { name: 'Login' }).click();
-    await page.getByText('Invalid password.', { exact: false }).waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+    await page
+      .getByText('Invalid password.', { exact: false })
+      .waitFor({ state: 'visible', timeout: 10000 })
+      .catch(() => {});
 
     console.log(`✅ Login HAR file recorded: ${harPath}`);
   } catch (error) {
@@ -119,8 +129,12 @@ async function recordRegisterHAR(harPath: string) {
     // Use unique username with timestamp to avoid conflicts
     const uniqueUsername = `newuser${Date.now()}`;
     await page.getByRole('textbox', { name: 'Username' }).fill(uniqueUsername);
-    await page.getByRole('textbox', { name: 'Password', exact: true }).fill('NewPassword123!');
-    await page.getByRole('textbox', { name: 'Confirm Password' }).fill('NewPassword123!');
+    await page
+      .getByRole('textbox', { name: 'Password', exact: true })
+      .fill('NewPassword123!');
+    await page
+      .getByRole('textbox', { name: 'Confirm Password' })
+      .fill('NewPassword123!');
     await page.getByRole('button', { name: 'Register' }).click();
     await page.waitForURL(/\/login/, { timeout: 20000 });
 
@@ -134,10 +148,17 @@ async function recordRegisterHAR(harPath: string) {
       .getByRole('textbox', { name: 'Username' })
       .waitFor({ state: 'visible', timeout: 15000 });
     // Leave username blank
-    await page.getByRole('textbox', { name: 'Password', exact: true }).fill('TestPassword123!');
-    await page.getByRole('textbox', { name: 'Confirm Password' }).fill('TestPassword123!');
+    await page
+      .getByRole('textbox', { name: 'Password', exact: true })
+      .fill('TestPassword123!');
+    await page
+      .getByRole('textbox', { name: 'Confirm Password' })
+      .fill('TestPassword123!');
     await page.getByRole('button', { name: 'Register' }).click();
-    await page.getByText('All fields are required.', { exact: false }).waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+    await page
+      .getByText('All fields are required.', { exact: false })
+      .waitFor({ state: 'visible', timeout: 10000 })
+      .catch(() => {});
 
     // Record error flow (missing password)
     console.log('Recording missing password flow...');
@@ -150,9 +171,14 @@ async function recordRegisterHAR(harPath: string) {
       .waitFor({ state: 'visible', timeout: 15000 });
     await page.getByRole('textbox', { name: 'Username' }).fill('testuser');
     // Leave password blank
-    await page.getByRole('textbox', { name: 'Confirm Password' }).fill('TestPassword123!');
+    await page
+      .getByRole('textbox', { name: 'Confirm Password' })
+      .fill('TestPassword123!');
     await page.getByRole('button', { name: 'Register' }).click();
-    await page.getByText('All fields are required.', { exact: false }).waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+    await page
+      .getByText('All fields are required.', { exact: false })
+      .waitFor({ state: 'visible', timeout: 10000 })
+      .catch(() => {});
 
     // Record error flow (non-matching passwords)
     console.log('Recording non-matching passwords flow...');
@@ -164,10 +190,17 @@ async function recordRegisterHAR(harPath: string) {
       .getByRole('textbox', { name: 'Username' })
       .waitFor({ state: 'visible', timeout: 15000 });
     await page.getByRole('textbox', { name: 'Username' }).fill('testuser');
-    await page.getByRole('textbox', { name: 'Password', exact: true }).fill('TestPassword123!');
-    await page.getByRole('textbox', { name: 'Confirm Password' }).fill('DifferentPassword456!');
+    await page
+      .getByRole('textbox', { name: 'Password', exact: true })
+      .fill('TestPassword123!');
+    await page
+      .getByRole('textbox', { name: 'Confirm Password' })
+      .fill('DifferentPassword456!');
     await page.getByRole('button', { name: 'Register' }).click();
-    await page.getByText('Passwords do not match.', { exact: false }).waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+    await page
+      .getByText('Passwords do not match.', { exact: false })
+      .waitFor({ state: 'visible', timeout: 10000 })
+      .catch(() => {});
 
     console.log(`✅ Registration HAR file recorded: ${harPath}`);
   } catch (error) {

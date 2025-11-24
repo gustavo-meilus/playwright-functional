@@ -8,7 +8,9 @@
     "test:ui": "playwright test --ui",
     "test:debug": "playwright test --debug",
     "test:record": "UPDATE_SNAPSHOT=true playwright test",
-    "record-har": "tsx scripts/record-har.ts"
+    "record-har": "tsx scripts/record-har.ts",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\""
   },
   "keywords": [
     "playwright",
@@ -48,9 +50,9 @@
   "devDependencies": {
     "@playwright/test": "^1.44.1",
     "@types/node": "^20.14.2",
+    "prettier": "^3.6.2",
     "tsx": "^4.11.0",
     "typescript": "^5.4.5",
     "xstate": "^4.38.2"
   }
 }
-

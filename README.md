@@ -50,7 +50,7 @@ This POC showcases how to build **maintainable**, **scalable**, and **reliable**
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm or yarn
 
 ### Installation
@@ -150,7 +150,12 @@ Tests are generated from JSON data:
 ```typescript
 import { test, expect } from '@playwright/test';
 import { runStep } from './fp-utils';
-import { navigateToLogin, fillUsername, fillPassword, clickLogin } from './login-steps';
+import {
+  navigateToLogin,
+  fillUsername,
+  fillPassword,
+  clickLogin,
+} from './login-steps';
 
 const testCases = loadTestData(); // Load from JSON
 
@@ -247,13 +252,14 @@ Every test action follows this pattern:
 ```typescript
 interface InteractionStep {
   readonly name: string;
-  readonly preCondition: (page: Page) => Promise<boolean>;  // Guard
-  readonly action: (page: Page) => Promise<void>;            // Mutation
-  readonly postCondition: (page: Page) => Promise<boolean>;   // Verification
+  readonly preCondition: (page: Page) => Promise<boolean>; // Guard
+  readonly action: (page: Page) => Promise<void>; // Mutation
+  readonly postCondition: (page: Page) => Promise<boolean>; // Verification
 }
 ```
 
 **Benefits:**
+
 - Explicit pre-conditions prevent actions on invalid states
 - Clear separation of concerns
 - Easy to test and debug
@@ -272,6 +278,7 @@ interface InteractionStep {
 ### HAR File Strategy
 
 **Why HAR Files?**
+
 - Faster execution (no network latency)
 - Test isolation (independent of external services)
 - Consistent results (same responses every time)
@@ -383,31 +390,38 @@ MIT License - see LICENSE file for details
 This Proof of Concept project is built upon excellent open-source tools and services:
 
 ### 🎭 [Playwright](https://playwright.dev)
+
 Thank you to the **Playwright team at Microsoft** for creating an outstanding end-to-end testing framework. Playwright's auto-waiting, web-first assertions, and cross-browser support make it the foundation of this POC. The framework's reliability, performance, and developer experience have been instrumental in demonstrating these architectural patterns.
 
 **Resources:**
+
 - [Playwright Documentation](https://playwright.dev/docs/intro)
 - [Playwright GitHub](https://github.com/microsoft/playwright)
 - [Playwright Discord](https://aka.ms/playwright/discord)
 
 ### 🔄 [XState](https://xstate.js.org)
+
 Thank you to **David Khourshid** and the **XState community** for building a powerful state machine library. XState enables Model-Based Testing by providing a robust way to define, visualize, and test application state machines. The library's TypeScript support and factory pattern capabilities make it perfect for thread-safe test automation.
 
 **Resources:**
+
 - [XState Documentation](https://xstate.js.org/docs/)
 - [XState GitHub](https://github.com/statelyai/xstate)
 - [XState Visualizer](https://stately.ai/viz)
 
 ### 🧪 [Practice Expand Testing](https://practice.expandtesting.com)
+
 Thank you to **Expand Testing** for providing a free, comprehensive testing practice platform. The [practice.expandtesting.com](https://practice.expandtesting.com) website offers real-world testing scenarios including login, registration, and various UI components that are perfect for demonstrating testing patterns. This POC uses their login and registration pages as examples.
 
 **Resources:**
+
 - [Practice Expand Testing](https://practice.expandtesting.com)
 - [Expand Testing Main Site](https://expandtesting.com)
 
 ---
 
 **Special Thanks:**
+
 - The open-source community for continuous innovation in testing tools
 - All contributors to Playwright, XState, and related projects
 - The testing community for sharing knowledge and best practices

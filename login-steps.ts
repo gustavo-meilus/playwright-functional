@@ -92,7 +92,9 @@ export const clickLogin: InteractionStep = createInteraction({
       // Wait for navigation to secure page (success case) or error message (failure case)
       await Promise.race([
         page.waitForURL(/\/secure/, { timeout: 10000 }), // Keep at 10s for stability
-        page.getByText(/Invalid (username|password)\./, { exact: false }).waitFor({ state: 'visible', timeout: 10000 }), // Keep at 10s for stability
+        page
+          .getByText(/Invalid (username|password)\./, { exact: false })
+          .waitFor({ state: 'visible', timeout: 10000 }), // Keep at 10s for stability
       ]).catch(() => {});
     } catch {
       // Continue if neither condition is met

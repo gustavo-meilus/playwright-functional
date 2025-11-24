@@ -37,8 +37,9 @@ This project follows all standards and best practices for Playwright testing wit
 ## Test Results
 
 **All 7 tests passing:**
+
 - ✅ TC1: Successful Login
-- ✅ TC2: Invalid Username  
+- ✅ TC2: Invalid Username
 - ✅ TC3: Invalid Password
 - ✅ TC1: Successful Registration
 - ✅ TC2: Registration with Missing Username
@@ -75,5 +76,4 @@ playwright-functional/
 
 ---
 
-*For detailed standards, see `AGENT_INSTRUCTIONS.md`*
-
+_For detailed standards, see `AGENT_INSTRUCTIONS.md`_

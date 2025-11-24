@@ -64,11 +64,17 @@ export const fillRegisterPassword = (password: string): InteractionStep =>
     name: `Fill Register Password`,
     preCondition: async (page: Page) => {
       // Optimized: Reduce timeout since HAR makes page load instant
-      const field = page.getByRole('textbox', { name: 'Password', exact: true });
+      const field = page.getByRole('textbox', {
+        name: 'Password',
+        exact: true,
+      });
       return await field.isVisible({ timeout: 5000 }).catch(() => false);
     },
     action: async (page: Page) => {
-      const field = page.getByRole('textbox', { name: 'Password', exact: true });
+      const field = page.getByRole('textbox', {
+        name: 'Password',
+        exact: true,
+      });
       await field.clear();
       if (password) {
         await field.fill(password);
@@ -76,7 +82,10 @@ export const fillRegisterPassword = (password: string): InteractionStep =>
     },
     postCondition: async (page: Page) => {
       // Optimized: Reduce timeout - field value should be set immediately after fill
-      const field = page.getByRole('textbox', { name: 'Password', exact: true });
+      const field = page.getByRole('textbox', {
+        name: 'Password',
+        exact: true,
+      });
       const value = await field.inputValue({ timeout: 2000 }).catch(() => '');
       return value === password;
     },
@@ -129,9 +138,17 @@ export const clickRegister: InteractionStep = createInteraction({
     try {
       await Promise.race([
         page.waitForURL(/\/login/, { timeout: 10000 }),
-        page.getByText(/(All fields are required|Passwords do not match)\./, { exact: false }).waitFor({ state: 'visible', timeout: 10000 }),
-        page.getByText(/error occurred/i, { exact: false }).waitFor({ state: 'visible', timeout: 10000 }),
-        page.locator('alert, [role="alert"]').waitFor({ state: 'visible', timeout: 10000 }),
+        page
+          .getByText(/(All fields are required|Passwords do not match)\./, {
+            exact: false,
+          })
+          .waitFor({ state: 'visible', timeout: 10000 }),
+        page
+          .getByText(/error occurred/i, { exact: false })
+          .waitFor({ state: 'visible', timeout: 10000 }),
+        page
+          .locator('alert, [role="alert"]')
+          .waitFor({ state: 'visible', timeout: 10000 }),
       ]);
       // One of the conditions was met, step succeeded
       return true;
@@ -140,25 +157,27 @@ export const clickRegister: InteractionStep = createInteraction({
       // Check if we're still on register page (error case) or navigated (success case)
       const url = page.url();
       const isLoginPage = url.includes('/login');
-      
+
       // If navigated to login, that's success
       if (isLoginPage) return true;
-      
+
       // If still on register page, check if error message is visible (might have appeared after timeout)
       // Check each condition individually to avoid Promise.race rejection
       const hasErrorText = await page
-        .getByText(/(All fields are required|Passwords do not match)\./, { exact: false })
+        .getByText(/(All fields are required|Passwords do not match)\./, {
+          exact: false,
+        })
         .isVisible({ timeout: 2000 })
         .catch(() => false);
-      
+
       if (hasErrorText) return true;
-      
+
       const hasAlert = await page
         .locator('alert, [role="alert"]')
         .first()
         .isVisible({ timeout: 2000 })
         .catch(() => false);
-      
+
       // Return true if error is visible (error case is valid), false otherwise
       return hasAlert;
     }
@@ -183,7 +202,7 @@ export const verifyRegistrationSuccess: InteractionStep = createInteraction({
     // Optimized: Navigation already happened in clickRegister, just verify state
     const url = page.url();
     const isLoginPage = url.includes('/login');
-    
+
     if (!isLoginPage) return false;
 
     // Optimized: Reduce timeout since HAR makes page load instant
@@ -192,7 +211,7 @@ export const verifyRegistrationSuccess: InteractionStep = createInteraction({
       .getByRole('textbox', { name: 'Username' })
       .isVisible({ timeout: 5000 })
       .catch(() => false);
-    
+
     // Success if we're on login page and form is visible
     return hasLoginForm;
   },
@@ -202,23 +221,33 @@ export const verifyRegistrationSuccess: InteractionStep = createInteraction({
  * Verifies an error message is displayed on the registration page.
  * @param errorMessage - The expected error message text.
  */
-export const verifyRegistrationError = (errorMessage: string): InteractionStep =>
+export const verifyRegistrationError = (
+  errorMessage: string
+): InteractionStep =>
   createInteraction({
     name: `Verify Registration Error: ${errorMessage}`,
     preCondition: async (page: Page) => {
       // Wait for error message to appear - try multiple methods
       const errorText = errorMessage.trim();
       const errorTextWithoutPeriod = errorText.replace(/\.$/, '');
-      
+
       // Wait up to 12 seconds for the error to appear (reduced from 15s but still safe)
       try {
         await Promise.race([
           // Wait for text directly (most reliable)
-          page.getByText(errorText, { exact: false }).waitFor({ state: 'visible', timeout: 12000 }), // Reduced from 15s but still safe
+          page
+            .getByText(errorText, { exact: false })
+            .waitFor({ state: 'visible', timeout: 12000 }), // Reduced from 15s but still safe
           // Wait for alert element
-          page.locator('alert').filter({ hasText: new RegExp(errorTextWithoutPeriod, 'i') }).waitFor({ state: 'visible', timeout: 12000 }), // Reduced from 15s but still safe
+          page
+            .locator('alert')
+            .filter({ hasText: new RegExp(errorTextWithoutPeriod, 'i') })
+            .waitFor({ state: 'visible', timeout: 12000 }), // Reduced from 15s but still safe
           // Wait for alert role
-          page.getByRole('alert').filter({ hasText: new RegExp(errorTextWithoutPeriod, 'i') }).waitFor({ state: 'visible', timeout: 12000 }), // Reduced from 15s but still safe
+          page
+            .getByRole('alert')
+            .filter({ hasText: new RegExp(errorTextWithoutPeriod, 'i') })
+            .waitFor({ state: 'visible', timeout: 12000 }), // Reduced from 15s but still safe
           // Also wait for any alert element to appear
           page.locator('alert').waitFor({ state: 'visible', timeout: 12000 }), // Reduced from 15s but still safe
         ]);
@@ -238,8 +267,8 @@ export const verifyRegistrationError = (errorMessage: string): InteractionStep =
 
       // The error message can appear as text directly or inside an alert element
       const errorText = errorMessage.trim().toLowerCase();
-      const errorKeywords = errorText.split(' ').filter(w => w.length > 2); // Get meaningful words
-      
+      const errorKeywords = errorText.split(' ').filter((w) => w.length > 2); // Get meaningful words
+
       // Method 1: Check for text directly using getByText (most reliable)
       try {
         const textLocator = page.getByText(errorMessage, { exact: false });
@@ -248,7 +277,7 @@ export const verifyRegistrationError = (errorMessage: string): InteractionStep =
       } catch {
         // Continue to next method
       }
-      
+
       // Method 1b: Check for text without period (in case period is missing)
       try {
         const textWithoutPeriod = errorMessage.replace(/\.$/, '');
@@ -258,7 +287,7 @@ export const verifyRegistrationError = (errorMessage: string): InteractionStep =
       } catch {
         // Continue to next method
       }
-      
+
       // Method 2: Check all alert elements for the error text
       const alertSelectors = ['alert', '[role="alert"]'];
       for (const selector of alertSelectors) {
@@ -269,8 +298,10 @@ export const verifyRegistrationError = (errorMessage: string): InteractionStep =
             const alertText = (await alerts.nth(i).textContent()) || '';
             const alertTextLower = alertText.toLowerCase();
             // Check if alert contains the error message or its key words
-            if (alertTextLower.includes(errorText) || 
-                errorKeywords.every(keyword => alertTextLower.includes(keyword))) {
+            if (
+              alertTextLower.includes(errorText) ||
+              errorKeywords.every((keyword) => alertTextLower.includes(keyword))
+            ) {
               return true;
             }
           }
@@ -278,20 +309,21 @@ export const verifyRegistrationError = (errorMessage: string): InteractionStep =
           // Continue to next selector
         }
       }
-      
+
       // Method 3: Check page content directly
       try {
-        const pageContent = await page.textContent('body') || '';
+        const pageContent = (await page.textContent('body')) || '';
         const pageContentLower = pageContent.toLowerCase();
-        if (pageContentLower.includes(errorText) || 
-            errorKeywords.every(keyword => pageContentLower.includes(keyword))) {
+        if (
+          pageContentLower.includes(errorText) ||
+          errorKeywords.every((keyword) => pageContentLower.includes(keyword))
+        ) {
           return true;
         }
       } catch {
         // Ignore errors
       }
-      
+
       return false;
     },
   });
-

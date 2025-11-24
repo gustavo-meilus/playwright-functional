@@ -27,60 +27,57 @@ type LoginEvent =
  * @returns The configured state machine.
  */
 export const createLoginMachine = (page: Page) => {
-  return createMachine<LoginContext, LoginEvent>(
-    {
-      id: 'loginMachine',
-      initial: 'initial',
-      context: {
-        page,
-        username: '',
-        password: '',
+  return createMachine<LoginContext, LoginEvent>({
+    id: 'loginMachine',
+    initial: 'initial',
+    context: {
+      page,
+      username: '',
+      password: '',
+    },
+    states: {
+      initial: {
+        on: {
+          NAVIGATE_TO_LOGIN: {
+            target: 'loginPage',
+          },
+        },
       },
-      states: {
-        initial: {
-          on: {
-            NAVIGATE_TO_LOGIN: {
-              target: 'loginPage',
-            },
+      loginPage: {
+        on: {
+          SUBMIT_VALID_CREDENTIALS: {
+            target: 'securePage',
+            actions: assign({
+              username: (_, event) => event.username,
+              password: (_, event) => event.password,
+            }),
+          },
+          SUBMIT_INVALID_USERNAME: {
+            target: 'loginPageWithError',
+            actions: assign({
+              username: (_, event) => event.username,
+              password: (_, event) => event.password,
+              errorMessage: () => 'Invalid username.',
+            }),
+          },
+          SUBMIT_INVALID_PASSWORD: {
+            target: 'loginPageWithError',
+            actions: assign({
+              username: (_, event) => event.username,
+              password: (_, event) => event.password,
+              errorMessage: () => 'Invalid password.',
+            }),
           },
         },
-        loginPage: {
-          on: {
-            SUBMIT_VALID_CREDENTIALS: {
-              target: 'securePage',
-              actions: assign({
-                username: (_, event) => event.username,
-                password: (_, event) => event.password,
-              }),
-            },
-            SUBMIT_INVALID_USERNAME: {
-              target: 'loginPageWithError',
-              actions: assign({
-                username: (_, event) => event.username,
-                password: (_, event) => event.password,
-                errorMessage: () => 'Invalid username.',
-              }),
-            },
-            SUBMIT_INVALID_PASSWORD: {
-              target: 'loginPageWithError',
-              actions: assign({
-                username: (_, event) => event.username,
-                password: (_, event) => event.password,
-                errorMessage: () => 'Invalid password.',
-              }),
-            },
-          },
-        },
-        securePage: {
-          type: 'final',
-        },
-        loginPageWithError: {
-          type: 'final',
-        },
+      },
+      securePage: {
+        type: 'final',
+      },
+      loginPageWithError: {
+        type: 'final',
       },
     },
-  );
+  });
 };
 
 export type LoginMachine = ReturnType<typeof createLoginMachine>;
-

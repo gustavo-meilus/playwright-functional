@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Test artifacts
+test-results/
+playwright-report/
+*.trace.zip
+*.webm
+*.png
+
+# HAR files (binary/JSON)
+har/*.har
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+

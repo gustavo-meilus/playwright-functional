@@ -50,25 +50,23 @@ async function executeRegisterPath(page: Page, testCase: RegisterTestCase) {
   // Use unique username for successful registration to avoid conflicts across workers
   // Format: newuser-{pid}-{timestamp}-{random} ensures uniqueness across parallel workers
   // Process ID ensures uniqueness across workers, timestamp + random ensures uniqueness within worker
-  const username = testCase.id === 'TC1' && testCase.expectedState === 'loginPage'
-    ? `newuser-${process.pid}-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`
-    : testCase.username;
+  const username =
+    testCase.id === 'TC1' && testCase.expectedState === 'loginPage'
+      ? `newuser-${process.pid}-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`
+      : testCase.username;
 
-  const fillUserResult = await runStep(
-    page,
-    fillRegisterUsername(username),
-  );
+  const fillUserResult = await runStep(page, fillRegisterUsername(username));
   expect(fillUserResult.success).toBe(true);
 
   const fillPassResult = await runStep(
     page,
-    fillRegisterPassword(testCase.password),
+    fillRegisterPassword(testCase.password)
   );
   expect(fillPassResult.success).toBe(true);
 
   const fillConfirmResult = await runStep(
     page,
-    fillConfirmPassword(testCase.confirmPassword),
+    fillConfirmPassword(testCase.confirmPassword)
   );
   expect(fillConfirmResult.success).toBe(true);
 
@@ -94,7 +92,7 @@ async function executeRegisterPath(page: Page, testCase: RegisterTestCase) {
     if (testCase.expectedError) {
       const verifyResult = await runStep(
         page,
-        verifyRegistrationError(testCase.expectedError),
+        verifyRegistrationError(testCase.expectedError)
       );
       expect(verifyResult.success).toBe(true);
     }
@@ -130,7 +128,10 @@ test.describe('Register Model-Based Tests with HAR Mocking', () => {
       } catch (error) {
         // HAR file doesn't exist or is invalid, continue without mocking
         // This is safe - each worker has its own context, so failures don't affect others
-        console.warn(`[Worker ${process.pid}] HAR file not available, using live network:`, error);
+        console.warn(
+          `[Worker ${process.pid}] HAR file not available, using live network:`,
+          error
+        );
       }
     }
   });
@@ -149,4 +150,3 @@ test.describe('Register Model-Based Tests with HAR Mocking', () => {
     });
   }
 });
-

@@ -68,7 +68,7 @@ async function executeLoginPath(page: Page, testCase: TestCase) {
     if (testCase.expectedError) {
       const verifyResult = await runStep(
         page,
-        verifyLoginError(testCase.expectedError),
+        verifyLoginError(testCase.expectedError)
       );
       expect(verifyResult.success).toBe(true);
     }
@@ -104,7 +104,10 @@ test.describe('Login Model-Based Tests with HAR Mocking', () => {
       } catch (error) {
         // HAR file doesn't exist or is invalid, continue without mocking
         // This is safe - each worker has its own context, so failures don't affect others
-        console.warn(`[Worker ${process.pid}] HAR file not available, using live network:`, error);
+        console.warn(
+          `[Worker ${process.pid}] HAR file not available, using live network:`,
+          error
+        );
       }
     }
   });
@@ -123,4 +126,3 @@ test.describe('Login Model-Based Tests with HAR Mocking', () => {
     });
   }
 });
-

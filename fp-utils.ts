@@ -4,8 +4,8 @@ import { Page, expect } from '@playwright/test';
  * Discriminated Union for functional error handling.
  * Avoids try/catch pollution in business logic.
  */
-export type Result<T = void> = 
-  | { success: true; value: T } 
+export type Result<T = void> =
+  | { success: true; value: T }
   | { success: false; error: string };
 
 /**
@@ -25,7 +25,8 @@ export interface InteractionStep {
 /**
  * Higher-order function to create steps with type safety.
  */
-export const createInteraction = (step: InteractionStep): InteractionStep => step;
+export const createInteraction = (step: InteractionStep): InteractionStep =>
+  step;
 
 /**
  * Executes a step in a strictly guarded sequence.
@@ -33,34 +34,45 @@ export const createInteraction = (step: InteractionStep): InteractionStep => ste
  * @param step - The InteractionStep to execute.
  * @returns Promise<Result> - Success or Failure with context.
  */
-export const runStep = async (page: Page, step: InteractionStep): Promise<Result> => {
+export const runStep = async (
+  page: Page,
+  step: InteractionStep
+): Promise<Result> => {
   // 1. Guard (Fail fast if UI is not ready)
-  const ready = await step.preCondition(page).catch(e => {
-    console.warn(`[${step.name}] Pre-condition error:`, e); 
-    return false; 
+  const ready = await step.preCondition(page).catch((e) => {
+    console.warn(`[${step.name}] Pre-condition error:`, e);
+    return false;
   });
-  
+
   if (!ready) {
-    return { success: false, error: `[${step.name}] Pre-condition failed: UI state invalid.` };
+    return {
+      success: false,
+      error: `[${step.name}] Pre-condition failed: UI state invalid.`,
+    };
   }
 
   // 2. Action (Encapsulate side-effects)
-  try { 
-    await step.action(page); 
-  } catch (e) { 
-    return { success: false, error: `[${step.name}] Action failed: ${(e as Error).message}` }; 
+  try {
+    await step.action(page);
+  } catch (e) {
+    return {
+      success: false,
+      error: `[${step.name}] Action failed: ${(e as Error).message}`,
+    };
   }
 
   // 3. Verify (Assert transition)
-  const success = await step.postCondition(page).catch(e => {
+  const success = await step.postCondition(page).catch((e) => {
     console.warn(`[${step.name}] Post-condition error:`, e);
     return false;
   });
 
   if (!success) {
-    return { success: false, error: `[${step.name}] Post-condition failed: Expected state not reached.` };
+    return {
+      success: false,
+      error: `[${step.name}] Post-condition failed: Expected state not reached.`,
+    };
   }
 
   return { success: true, value: undefined };
 };
-

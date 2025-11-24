@@ -5,12 +5,14 @@ Thank you for your interest in contributing to this Proof of Concept project!
 ## Development Setup
 
 1. **Fork and Clone**
+
    ```bash
    git clone https://github.com/your-username/playwright-functional.git
    cd playwright-functional
    ```
 
 2. **Install Dependencies**
+
    ```bash
    npm install
    npx playwright install
@@ -26,20 +28,24 @@ Thank you for your interest in contributing to this Proof of Concept project!
 This project follows strict coding standards outlined in `AGENT_INSTRUCTIONS.md`. Key requirements:
 
 ### TypeScript
+
 - ✅ **No `any` types** - Use proper types (`Page`, `InteractionStep`, etc.)
 - ✅ **Explicit imports** - `import { type Page } from '@playwright/test'`
 - ✅ **Strict typing** - All functions must have proper type annotations
 
 ### Locators
+
 - ✅ **User-facing only** - Use `getByRole`, `getByLabel`, `getByText`, `getByTestId`
 - ❌ **No attribute selectors** - Avoid `page.locator('input[name="..."]')`
 - ✅ **Handle ambiguity** - Use `exact: true` when needed
 
 ### Wait Strategies
+
 - ✅ **Event-based waits** - `waitForURL()`, `waitFor({ state: 'visible' })`
 - ❌ **No `waitForTimeout`** - Use event-based alternatives
 
 ### Functional Programming
+
 - ✅ **Pure functions** - No side effects in business logic
 - ✅ **Atomic steps** - Each `InteractionStep` is atomic and reusable
 - ✅ **Immutable data** - Use `readonly` properties
@@ -47,6 +53,7 @@ This project follows strict coding standards outlined in `AGENT_INSTRUCTIONS.md`
 ## Development Workflow
 
 1. **Create a branch**
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -66,6 +73,7 @@ This project follows strict coding standards outlined in `AGENT_INSTRUCTIONS.md`
      ```
 
 4. **Commit changes**
+
    ```bash
    git commit -m "feat: add your feature description"
    ```
@@ -78,6 +86,7 @@ This project follows strict coding standards outlined in `AGENT_INSTRUCTIONS.md`
 ## Commit Message Format
 
 Use conventional commits:
+
 - `feat:` - New feature
 - `fix:` - Bug fix
 - `docs:` - Documentation changes
@@ -95,4 +104,3 @@ Use conventional commits:
 ## Questions?
 
 Feel free to open an issue for questions or discussions!
-
